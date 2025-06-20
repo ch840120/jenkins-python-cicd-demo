@@ -1,0 +1,35 @@
+services:
+  jenkins:
+    build:
+      context: .           # 指定「建置上下文」路徑，Docker 引擎會以此目錄作為參考，尋找 Dockerfile 及其他資源
+      dockerfile: Dockerfile  # 明確告訴 Docker 用哪個檔案當做 Dockerfile（預設就會在 context 目錄下找 “Dockerfile”，通常這行可以省略）
+    image: my-jenkins-with-docker:latest
+    container_name: jenkins  # 容器名稱設定為 jenkins
+    ports:
+      - "8080:8080"  # 將宿主機 8080 埠映射到容器內 Jenkins Web 介面的 8080 埠
+      - "50000:50000" # 將宿主機 50000 埠映射到容器內 Jenkins agent 用的埠
+    volumes:
+      - jenkins_home:/var/jenkins_home  # 使用命名卷 jenkins_home 持久化 Jenkins 配置和資料
+      - /var/run/docker.sock:/var/run/docker.sock  # 掛載 Docker socket，讓 Jenkins 裡可以執行 Docker 命令（選擇性）
+      - /mnt/c/Users/user/.ssh/id_ed25519:/var/jenkins_home/.ssh/id_ed25519:ro   # 掛載本地 ED25519 私鑰，供 Jenkins 對 GitHub 做 SSH 認證
+      - /mnt/c/Users/user/.ssh/known_hosts:/var/jenkins_home/.ssh/known_hosts:ro # 掛載已知主機列表，避免 CI/CD 過程中出現「是否繼續連線？」的互動提示
+    dns:                # 指定容器使用的 DNS 伺服器（負責網域名稱解析）
+      - 8.8.8.8         # 第一個 DNS 伺服器，Google 公共 DNS 的主要地址
+      - 8.8.4.4         # 第二個 DNS 伺服器，Google 公共 DNS 的備援地址
+    restart: unless-stopped  # 容器異常停止會自動重啟，除非手動停止
+
+  registry:
+    image: registry:2      # 使用官方 registry v2 映像
+    container_name: registry  # 容器名稱設定為 registry
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    ports:
+      - "5000:5000"        # 將主機 5000 端口映射到容器 5000 端口
+    volumes:
+      - registry-data:/var/lib/registry
+    restart: unless-stopped  # 容器異常停止會自動重啟，除非手動停止
+
+volumes:
+  jenkins_home:      # 定義外部命名卷，用來持久化 Jenkins 資料，避免資料遺失
+  registry-data:     # 定義外部命名卷 registry-data 的 volume
+
