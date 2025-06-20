@@ -24,10 +24,11 @@
 ## 🏗 建置 Jenkins (jenkins_build)
 
 在專案根目錄下有一個 `jenkins_build` 資料夾，裡面包含兩個檔案用來快速建置一個可跑 Docker 的 Jenkins 環境：
+```
 jenkins_build/
 ├── Dockerfile # 自訂 Jenkins image：基於 jenkins/jenkins:lts，安裝 docker.io 並將 jenkins 使用者加入 Docker 群組 (GID=1001)
 └── docker-compose.yml # 同時啟動 Jenkins + 本地 Registry 的 Compose 檔，並掛載必要的 Volume、Docker socket、SSH key
-
+```
 ### 🚀 使用步驟
 
 ```bash
