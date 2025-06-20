@@ -13,7 +13,7 @@ class Item(BaseModel):
 
 @app.get("/ping")
 async def ping():
-    return {"msg": "pong"}
+    return {"msg": "pong1"}
 
 @app.get("/items")
 async def list_items():
