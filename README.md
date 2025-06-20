@@ -1,4 +1,4 @@
-# 🛠️ jenkins-python-cicd-demo
+# 👨‍💻 jenkins-python-cicd-demo
 
 一個簡易的 FastAPI Python 應用範例，搭配完整的 Jenkins CI/CD 流水線，可自動：
 
